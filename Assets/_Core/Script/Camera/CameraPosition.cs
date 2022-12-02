@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CameraPosition : MonoBehaviour
 {
-   //[SerializeField]
-   //Camera _camera;
+    //[SerializeField]
+    //Camera _camera;
 
     [SerializeField]
     Rigidbody2D playerRigidBody2D;
 
-   //[SerializeField]
-   //GameObject playerRigidBody2DPrefab;
+    //[SerializeField]
+    //GameObject playerRigidBody2DPrefab;
 
     [SerializeField]
     Transform PlayerTarget;
@@ -27,6 +27,9 @@ public class CameraPosition : MonoBehaviour
 
     [SerializeField]
     Vector3 offset;
+
+    [SerializeField]
+    float transformPosition;
     private void Start()
     {
         playerRigidBody2D = GetComponent<Rigidbody2D>();
@@ -38,9 +41,11 @@ public class CameraPosition : MonoBehaviour
         Vector3 _desiredPosition = new Vector3(PlayerTarget.position.x + offset.x, PlayerTarget.position.y + offset.y, -2 - offset.z);
         Vector3 _smoothedPosition = Vector3.Lerp(transform.position, _desiredPosition, smoothSpeed);
         transform.position = _smoothedPosition;
+
+
+
+
+
+
     }
-
-
-
-
 }

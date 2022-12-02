@@ -109,9 +109,10 @@ public class PlayerControllerVanillaIcy : MonoBehaviour
 
     }
 
-    void ShootIce(GameObject bullet, Transform shootPosition)
+    private void ShootIce(GameObject bullet, Transform shootPosition)
     {
        Instantiate(bullet, shootPosition.position, Quaternion.identity);
+
     }
 
     

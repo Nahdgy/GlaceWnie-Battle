@@ -10,8 +10,6 @@ public class EnemyController : MonoBehaviour
     private int destPoint;
 
     [SerializeField]
-    private int maxHealth = 5;
-    [SerializeField]
     private int Health;
     
     void Start()
@@ -55,6 +53,12 @@ public class EnemyController : MonoBehaviour
     {
         Health -= _dammage;
         if (Health <= 0) Die();
+    }
+
+    private void ShootIce(GameObject bullet, Transform shootPosition)
+    {
+        Instantiate(bullet, shootPosition.position, Quaternion.identity);
+
     }
 
 

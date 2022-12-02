@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletForceRight : MonoBehaviour
 {
     [SerializeField]
-    private Rigidbody BulletRigidbody;
+    private Rigidbody2D BulletRigidbody;
     
     public float shootForce = 720f;
 
@@ -13,23 +13,38 @@ public class BulletForceRight : MonoBehaviour
     private int bulletDammage = 1;
 
     [SerializeField]
-    private PlayerControllerVanillaIcy position;
+    private float destroytimer;
+
+    
 
 
     void Start()
     {
 
         //Fetch the Rigidbody from the GameObject with this script attached
-        BulletRigidbody = GetComponent<Rigidbody>();
+        BulletRigidbody = GetComponent<Rigidbody2D>();
         //Apply a force to this Rigidbody in direction of this GameObjects up axis
         BulletRigidbody.AddForce(transform.right * shootForce);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         EnemyController _enemy = collision.GetComponent<EnemyController>();
-        if (_enemy != null)
+        Debug.Log("collision");
+        if (collision.transform.CompareTag("Enemy"))
         {
+            Debug.Log("in IF");
             _enemy.TakeDammage(bulletDammage);
+            Destroy(gameObject);
         }
+        if(collision.transform)
+        {
+            StartCoroutine(Suppression());
+        }
+        
+    }
+    private IEnumerator Suppression()
+    {
+        yield return new WaitForSeconds(destroytimer);
+        Destroy(gameObject);
     }
 }
