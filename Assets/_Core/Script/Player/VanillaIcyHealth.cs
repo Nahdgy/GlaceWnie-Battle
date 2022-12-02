@@ -12,7 +12,12 @@ public class VanillaIcyHealth : MonoBehaviour
     public HealthBar healthBar;
 
     [SerializeField]
+    public float invicibilityFlashDelay = 0.05f;
+    [SerializeField]
+    public float invicibilyTimer;
+    [SerializeField]
     public bool isInvisible = false;
+
     [SerializeField]
     public SpriteRenderer coloring;
     
@@ -39,21 +44,46 @@ public class VanillaIcyHealth : MonoBehaviour
     { 
         if(!isInvisible)
         {
-        currentHealth -= damage;
-        healthBar.SetHealth(currentHealth);
-        
+            currentHealth -= damage;
+            healthBar.SetHealth(currentHealth);
+
+            if(currentHealth <= 0)
+            {
+                Die();
+                return;
+            }
+            isInvisible = true;
+            StartCoroutine(InvicibilityFlash());
+            StartCoroutine(InvicibilityTimer());
         }
 
         
 
     }
-public void InvicibilityFlash()
+    public void Die()
+    {
+        PlayerControllerVanillaIcy.instance.enabled = false;
+        PlayerControllerVanillaIcy.instance.animator.SetTrigger("Die");
+        PlayerControllerVanillaIcy.instance.rb.bodyType = RigidbodyType2D.Kinematic;
+        PlayerControllerVanillaIcy.instance.vanillaIcyCollider.enabled = false;
+        StartMenu.instance.VanillaGameEnd();
+    }
+
+
+public IEnumerator InvicibilityFlash()
     {
        while(isInvisible)
        {
-          coloring.color = new Color(192f,0f,38f,255f);
-          coloring.color = new Color(192f, 120f, 38f, 255f);
-       }
+          coloring.color = new Color(1f,1f,1f,0f);
+            yield return new WaitForSeconds(invicibilityFlashDelay);
+          coloring.color = new Color(1f,1f,1f,1f);
+            yield return new WaitForSeconds(invicibilityFlashDelay);
+        }
 
+    }
+public IEnumerator InvicibilityTimer()
+    {
+        yield return new WaitForSeconds(invicibilyTimer);
+        isInvisible = false;
     }
 }

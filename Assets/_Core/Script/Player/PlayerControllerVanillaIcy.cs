@@ -5,14 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-
-//[DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
 public class PlayerControllerVanillaIcy : MonoBehaviour
 {
-    //[SerializeField]
-    //Animator VanillaAnim;
-    //[SerializeField]
-    //private float rotationForce;
+   
     [SerializeField]
     private float moveSpeed;
 
@@ -31,12 +26,16 @@ public class PlayerControllerVanillaIcy : MonoBehaviour
     private Transform groundCheckRight;
 
     [SerializeField]
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
+    [SerializeField]
+    public CapsuleCollider2D vanillaIcyCollider;
     private Vector3 velocity = Vector3.zero;
+
+
+    public Animator animator;
    
 
-    //[SerializeField]
-    //public ParticleSystem isShoot;
+   
     [SerializeField]
     public GameObject bulletDiag;
     [SerializeField]
@@ -52,21 +51,18 @@ public class PlayerControllerVanillaIcy : MonoBehaviour
     public Transform shootDiag;
 
     [SerializeField]
-    public float health;
+    private float health;
+    [SerializeField]
+    public static PlayerControllerVanillaIcy instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Update()
     {
-       //float min = -1;
-       //float max = 1;
-       //
-       //if (shootUp.rotation.z > 180)
-       //{
-       //    max = 0;
-       //}
-       //
-       //shootUp.Rotate(new Vector3(0, 0, Mathf.Clamp(Input.GetAxis("Vertical2"), min, max) * Time.deltaTime * rotationForce), Space.World);
-
-        float horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
+        float horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed;
         
         MovePlayer(horizontalMovement);
 

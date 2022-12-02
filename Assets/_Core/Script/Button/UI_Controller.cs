@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DieVanilla : MonoBehaviour
+public class UI_Controller : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

@@ -4,27 +4,58 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public float speed;
-    public Transform[] waypoint;
+    public float Speed;
+    public Transform[] Waypoint;
     private Transform target;
     private int destPoint;
-    // Start is called before the first frame update
+
+    [SerializeField]
+    private int maxHealth = 5;
+    [SerializeField]
+    private int Health;
+    
     void Start()
     {
-        target = waypoint[0]; 
+        target = Waypoint[0];
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 dir = target.position - transform.position;
-        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+        transform.Translate(dir.normalized * Speed * Time.deltaTime, Space.World);
 
-        if(Vector3.Distance(transform.position, target.position) < 0.3f)
+        if (Vector3.Distance(transform.position, target.position) < 0.3f)
         {
-            destPoint = (destPoint + 1) % waypoint.Length;
-            target = waypoint[destPoint];
+            destPoint = (destPoint + 1) % Waypoint.Length;
+            target = Waypoint[destPoint];
         }
-        
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+
+            TakeDammage(1);
+        }
+
+
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("VanillaIcy"))
+        {
+            VanillaIcyHealth health = collision.transform.GetComponent<VanillaIcyHealth>();
+            health.TakeDamage(1);
+        }
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
+    }
+    public void TakeDammage(int _dammage)
+    {
+        Health -= _dammage;
+        if (Health <= 0) Die();
+    }
+
+
 }

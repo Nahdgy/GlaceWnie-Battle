@@ -4,9 +4,17 @@ using UnityEngine;
 
 public class BulletForceRight : MonoBehaviour
 {
-    Rigidbody BulletRigidbody;
+    [SerializeField]
+    private Rigidbody BulletRigidbody;
+    
     public float shootForce = 720f;
-    PlayerControllerVanillaIcy position;
+
+    [SerializeField]
+    private int bulletDammage = 1;
+
+    [SerializeField]
+    private PlayerControllerVanillaIcy position;
+
 
     void Start()
     {
@@ -15,5 +23,13 @@ public class BulletForceRight : MonoBehaviour
         BulletRigidbody = GetComponent<Rigidbody>();
         //Apply a force to this Rigidbody in direction of this GameObjects up axis
         BulletRigidbody.AddForce(transform.right * shootForce);
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        EnemyController _enemy = collision.GetComponent<EnemyController>();
+        if (_enemy != null)
+        {
+            _enemy.TakeDammage(bulletDammage);
+        }
     }
 }
