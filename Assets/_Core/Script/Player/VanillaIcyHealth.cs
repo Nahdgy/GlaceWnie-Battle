@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +21,8 @@ public class VanillaIcyHealth : MonoBehaviour
 
     [SerializeField]
     public SpriteRenderer coloring;
-    
+
+    public static VanillaIcyHealth instance;
     void Start()
     {
         currentHealth = maxHealth;
@@ -33,12 +35,12 @@ public class VanillaIcyHealth : MonoBehaviour
        if(Input.GetKeyUp(KeyCode.H))
         {
 
-            TakeDamage(1);
+            TakeDamagePlayer(1);
         }
         
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamagePlayer(int damage)
     
     
     { 
@@ -67,6 +69,20 @@ public class VanillaIcyHealth : MonoBehaviour
         PlayerControllerVanillaIcy.instance.rb.bodyType = RigidbodyType2D.Kinematic;
         PlayerControllerVanillaIcy.instance.vanillaIcyCollider.enabled = false;
         StartMenu.instance.VanillaGameEnd();
+    }
+
+    public void HealPlayer(int amount)
+    {
+        if((currentHealth + amount) > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+        else
+        {
+            currentHealth += amount;
+        }
+        
+        healthBar.SetHealth(currentHealth);
     }
 
 

@@ -13,10 +13,16 @@ public class PlayerControllerVanillaIcy : MonoBehaviour
 
     [SerializeField]
     public float jumpForce;
-   
-    
+
     [SerializeField]
-    private bool isJumping;
+    private int nbSauts;
+    [SerializeField]
+    private int ground = 6;
+    [SerializeField] 
+    private int nbMaxSauts;
+
+    [SerializeField]
+    private bool isJumping = false;
     [SerializeField]
     private bool isGrounded;
     
@@ -51,6 +57,9 @@ public class PlayerControllerVanillaIcy : MonoBehaviour
     public Transform shootDiag;
 
     [SerializeField]
+    Animator anim;
+
+    [SerializeField]
     private float health;
     [SerializeField]
     public static PlayerControllerVanillaIcy instance;
@@ -60,18 +69,29 @@ public class PlayerControllerVanillaIcy : MonoBehaviour
         instance = this;
     }
 
+    private void FixedUpdate()
+    {
+        if(Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position))
+        {
+            isGrounded = true;
+        } 
+    }
+
     void Update()
     {
         float horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed;
         
         MovePlayer(horizontalMovement);
 
-        bool isGrounded = Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position);
+        float _palyerVelocity = Mathf.Abs(rb.velocity.x);
+        anim.SetFloat("Speed",_palyerVelocity);
+
+        
+       
 
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
-            bool jumping = Input.GetButton("Jump");
-            JumpPlayer(jumping);
+            isJumping = true;
             UnityEngine.Debug.Log(isGrounded);
         }
 
@@ -101,22 +121,35 @@ public class PlayerControllerVanillaIcy : MonoBehaviour
     {
         Vector3 targetVelocity = new Vector2(_horizontalMovement, rb.velocity.y);
         rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref velocity, .05f);
+
+        if(isJumping == true)
+        {
+           JumpPlayer(rb);
+            isJumping = false;
+        }
     }
 
     void JumpPlayer(bool _jumping)
     {
-        rb.AddForce(new Vector2(0f, jumpForce));
+        if (nbSauts >= nbMaxSauts)
+        {
+            return;
+        }
+        rb.AddForce(transform.up * jumpForce);
+        nbSauts++;
+    }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == ground)
+        {
+            isGrounded = true;
+            nbSauts = 0;
+        }
     }
 
     private void ShootIce(GameObject bullet, Transform shootPosition)
     {
        Instantiate(bullet, shootPosition.position, Quaternion.identity);
-
     }
-
-    
-
-
-  
 }

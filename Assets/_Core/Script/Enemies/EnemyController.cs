@@ -1,20 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public float Speed;
+    [Header("Speed"), Space(5)]
+
+    public float _speed;
     public Transform[] Waypoint;
     private Transform target;
     private int destPoint;
 
     [SerializeField]
-    private int Health;
-    
+    private int _health;
+
+    public float Speed { get { return _speed; } 
+        private set {
+            _speed = (value > 0) ? value : 0; } 
+    }
+
+    [SerializeField]
+    private GameObject projectile;
+    [SerializeField]
+    private GameObject portal;
+    [SerializeField]
+    private Transform shootPosition;
+   
+
+    [SerializeField, Header("Timer settings")]
+    private float beginTime;
+    [SerializeField]
+    private float countDown;
+    [SerializeField]
+    private bool canCount = true;
+    [SerializeField]
+    bool doOnce;
+
+
     void Start()
     {
         target = Waypoint[0];
+        
     }
 
     // Update is called once per frame
@@ -30,10 +57,11 @@ public class EnemyController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
-
-            TakeDammage(1);
+            TakeDamageEnemy(1);
         }
-
+        TimeToCount();
+        Shoot();
+        
 
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -41,25 +69,60 @@ public class EnemyController : MonoBehaviour
         if (collision.transform.CompareTag("VanillaIcy"))
         {
             VanillaIcyHealth health = collision.transform.GetComponent<VanillaIcyHealth>();
-            health.TakeDamage(1);
+            health.TakeDamagePlayer(1);
+            
         }
+    }
+    private void Shoot()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Debug.Log("IsInstance");
+            Instantiate(projectile, shootPosition.position, Quaternion.identity);
+        }
+
+    }
+    void TimeToCount()
+    {
+        if (countDown >= 0.0f && canCount)
+        {
+            countDown -= Time.deltaTime;
+        }
+        else if (countDown <= 0.0f && !doOnce)
+        {
+            canCount = false;
+            doOnce = true;
+            countDown = 0.0f;
+            Debug.Log("IsInstance");
+            Instantiate(projectile, shootPosition.position, Quaternion.identity);
+            ResetTimer();
+        }
+        
+    }
+    void ResetTimer()
+    {
+        countDown = beginTime;
+        canCount = true;
+        doOnce = false;
+        
+    }
+    private void PortalActive()
+    {
+        portal.SetActive(true);
     }
 
     void Die()
     {
+        PortalActive();
         Destroy(gameObject);
     }
-    public void TakeDammage(int _dammage)
+
+    public void TakeDamageEnemy(int _damage)
     {
-        Health -= _dammage;
-        if (Health <= 0) Die();
+        _health -= _damage;
+        if (_health <= 0)
+        {
+            Die();
+        }
     }
-
-    private void ShootIce(GameObject bullet, Transform shootPosition)
-    {
-        Instantiate(bullet, shootPosition.position, Quaternion.identity);
-
-    }
-
-
 }

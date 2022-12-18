@@ -26,7 +26,7 @@ public class CameraPosition : MonoBehaviour
     float smoothSpeed = 0.05f;
 
     [SerializeField]
-    Vector3 offset;
+    private Vector3 offset;
 
     [SerializeField]
     float transformPosition;
@@ -41,11 +41,5 @@ public class CameraPosition : MonoBehaviour
         Vector3 _desiredPosition = new Vector3(PlayerTarget.position.x + offset.x, PlayerTarget.position.y + offset.y, -2 - offset.z);
         Vector3 _smoothedPosition = Vector3.Lerp(transform.position, _desiredPosition, smoothSpeed);
         transform.position = _smoothedPosition;
-
-
-
-
-
-
     }
 }
